@@ -137,23 +137,23 @@ public class GameWindow extends Frame{
 
     private void movePlane(){
         //move plane to right
-        if(isKeyRight && (planeX + 15)< (screenWidth - 25)){
-            planeX+=15;
+        if(isKeyRight && (planeX + 10)< (screenWidth - 50)){
+            planeX+=10;
             repaint();
         }
         //move plane to left
-        if(isKeyLeft && (planeX - 15)> -25){
-            planeX-=15;
+        if(isKeyLeft && (planeX - 10)> -5){
+            planeX-=10;
             repaint();
         }
         //move plane to up
-        if(isKeyUp && (planeY - 15)>21){
-            planeY-=15;
+        if(isKeyUp && (planeY - 10)>20){
+            planeY-=10;
             repaint();
         }
         //move plane to down
-        if(iskeyDown && (planeY + 15)<(screenHight-21)){
-            planeY+=15;
+        if(iskeyDown && (planeY + 10)<(screenHight-35)){
+            planeY+=10;
             repaint();
         }
     }
