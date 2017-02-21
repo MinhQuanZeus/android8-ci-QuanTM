@@ -4,6 +4,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -11,6 +12,10 @@ import java.io.IOException;
  * Created by QuanT on 2/19/2017.
  */
 public class GameWindow extends Frame{
+
+    private static final int SCREEN_WIDTH = 400;
+    private static final int SCREEN_HIGHT = 600;
+    private static final int SPEED = 10;
 
     Image backgroundImage;
     Image planeImage;
@@ -21,8 +26,13 @@ public class GameWindow extends Frame{
     private boolean iskeyDown = false;
     private boolean isKeyLeft = false;
     private boolean isKeyRight = false;
-    private final int screenWidth = 400;
-    private final int screenHight = 600;
+
+    BufferedImage backBufferImage;
+    private Graphics backGraphics;
+
+    Thread thread;
+
+
 
     public GameWindow(){
         setVisible(true);
@@ -68,22 +78,18 @@ public class GameWindow extends Frame{
 //                switch (e.getKeyCode()){
 //                    case KeyEvent.VK_RIGHT:
 //                        //TODO: move plane to right
-//                        planeX+=10;
-//                        repaint();
+//                        planeX+=SPEED;
 //                        break;
 //                    case KeyEvent.VK_LEFT:
 //                        //TODO: move plane to Left
-//                        planeX-=10;
-//                        repaint();
+//                        planeX-=SPEED;
 //                        break;
 //                    case KeyEvent.VK_UP:
 //                        //move plane to up
-//                        planeY-=10;
-//                        repaint();
+//                        planeY-=SPEED;
 //                        break;
 //                    case KeyEvent.VK_DOWN:
-//                        planeY+=10;
-//                        repaint();
+//                        planeY+=SPEED;
 //                        break;
 //
 //                }
@@ -105,7 +111,7 @@ public class GameWindow extends Frame{
                         iskeyDown = true;
                         break;
                 }
-                //
+
                 movePlane();
             }
 
@@ -133,29 +139,46 @@ public class GameWindow extends Frame{
             }
         });
 
+
+        thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true){
+                    try{
+                        Thread.sleep(5);
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                    }
+                    repaint();
+                }
+            }
+        });
+
+
+        backBufferImage = new BufferedImage(SCREEN_WIDTH, SCREEN_HIGHT, BufferedImage.TYPE_INT_ARGB);
+        backGraphics = backBufferImage.getGraphics();
+        thread.start();
     }
+
 
     private void movePlane(){
         //move plane to right
-        if(isKeyRight && (planeX + 10)< (screenWidth - 50)){
-            planeX+=10;
-            repaint();
+        if(isKeyRight && (planeX + 10)< (SCREEN_WIDTH - 50)){
+            planeX+=SPEED;
         }
         //move plane to left
         if(isKeyLeft && (planeX - 10)> -5){
-            planeX-=10;
-            repaint();
+            planeX-=SPEED;
         }
         //move plane to up
         if(isKeyUp && (planeY - 10)>20){
-            planeY-=10;
-            repaint();
+            planeY-=SPEED;
         }
         //move plane to down
-        if(iskeyDown && (planeY + 10)<(screenHight-35)){
-            planeY+=10;
-            repaint();
+        if(iskeyDown && (planeY + 10)<(SCREEN_HIGHT-35)){
+            planeY+=SPEED;
         }
+
     }
 
 
@@ -172,8 +195,11 @@ public class GameWindow extends Frame{
 
     @Override
     public void update(Graphics g) {
-        g.drawImage(backgroundImage,0,0,getWidth(),getHeight(),null);
-        g.drawImage(planeImage,planeX,planeY,50,44,null);
-   //     g.drawImage(bombImage,50,100,10,10,null);
+        if(backBufferImage!=null) {
+            backGraphics.drawImage(backgroundImage, 0, 0, SCREEN_WIDTH, SCREEN_HIGHT, null);
+            backGraphics.drawImage(planeImage, planeX, planeY, 50, 44, null);
+            //     g.drawImage(bombImage,50,100,10,10,null);
+            g.drawImage(backBufferImage, 0, 0, null);
+        }
     }
 }
