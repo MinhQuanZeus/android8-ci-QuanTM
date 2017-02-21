@@ -20,8 +20,11 @@ public class GameWindow extends Frame{
     Image backgroundImage;
     Image planeImage;
     Image bombImage;
+    Image enemyImage;
     private int planeX = (400-25)/2;
     private int planeY = 600-44;
+    private int enemyX = (400-25)/2;
+    private int enemyY = 0;
     private boolean isKeyUp = false;
     private boolean iskeyDown = false;
     private boolean isKeyLeft = false;
@@ -31,6 +34,7 @@ public class GameWindow extends Frame{
     private Graphics backGraphics;
 
     Thread thread;
+    PlayerBullet playerBullet;
 
 
 
@@ -60,6 +64,8 @@ public class GameWindow extends Frame{
         backgroundImage = loadImageFromRes("background.png");
         planeImage = loadImageFromRes("plane4.png");
         bombImage = loadImageFromRes("bomb.png");
+        enemyImage = loadImageFromRes("plane1.png");
+
 
         //2: draw image
       //  update(getGraphics());
@@ -110,6 +116,12 @@ public class GameWindow extends Frame{
                         //press down key
                         iskeyDown = true;
                         break;
+                    case KeyEvent.VK_SPACE:
+                        playerBullet = new PlayerBullet();
+                        playerBullet.image = loadImageFromRes("bullet.png");
+                        playerBullet.x = planeX+planeImage.getWidth(null)/4;
+                        playerBullet.y = planeY;
+                        break;
                 }
 
                 movePlane();
@@ -145,15 +157,19 @@ public class GameWindow extends Frame{
             public void run() {
                 while (true){
                     try{
-                        Thread.sleep(5);
+
+                        Thread.sleep(17);
                     }catch (Exception ex){
                         ex.printStackTrace();
                     }
                     repaint();
+                    enemyY++;
+                    if(playerBullet!=null){
+                        playerBullet.y-=10;
+                    }
                 }
             }
         });
-
 
         backBufferImage = new BufferedImage(SCREEN_WIDTH, SCREEN_HIGHT, BufferedImage.TYPE_INT_ARGB);
         backGraphics = backBufferImage.getGraphics();
@@ -197,7 +213,11 @@ public class GameWindow extends Frame{
     public void update(Graphics g) {
         if(backBufferImage!=null) {
             backGraphics.drawImage(backgroundImage, 0, 0, SCREEN_WIDTH, SCREEN_HIGHT, null);
-            backGraphics.drawImage(planeImage, planeX, planeY, 50, 44, null);
+            backGraphics.drawImage(planeImage, planeX, planeY, planeImage.getWidth(null)/2, planeImage.getHeight(null)/2, null);
+            backGraphics.drawImage(enemyImage,enemyX,enemyY,50,44,null);
+            if(playerBullet!=null) {
+                backGraphics.drawImage(playerBullet.image, playerBullet.x, playerBullet.y, 10, 10, null);
+            }
             //     g.drawImage(bombImage,50,100,10,10,null);
             g.drawImage(backBufferImage, 0, 0, null);
         }
