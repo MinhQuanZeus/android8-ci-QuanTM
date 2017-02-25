@@ -1,47 +1,55 @@
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by QuanT on 2/19/2017.
  */
-public class GameWindow extends Frame{
+public class GameWindow extends Frame {
 
     private static final int SCREEN_WIDTH = 400;
     private static final int SCREEN_HIGHT = 600;
-    private static final int SPEED = 10;
+    private static final int SPEED = 6;
 
-    Image backgroundImage;
-    Image planeImage;
-    Image bombImage;
-    Image enemyImage;
-    private int planeX = (400-25)/2;
-    private int planeY = 600-44;
-    private int enemyX = (400-25)/2;
-    private int enemyY = 0;
+
     private boolean isKeyUp = false;
     private boolean iskeyDown = false;
     private boolean isKeyLeft = false;
     private boolean isKeyRight = false;
+    private boolean isSpace = false;
 
-    BufferedImage backBufferImage;
+
+    public Plane plane;
+    private Utilities util;
+    private Ground ground;
+
+    private BufferedImage backBufferImage;
     private Graphics backGraphics;
 
     Thread thread;
-    PlayerBullet playerBullet;
+    int count = 0;
+    private ArrayList<PlayerBullet> playerBullets = new ArrayList<>();
+    private ArrayList<Enemy> enemies = new ArrayList<>();
+    private ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
+    private ArrayList<Island> islands = new ArrayList<>();
+    long lasttimepress = 0;
 
 
-
-    public GameWindow(){
+    public GameWindow() {
         setVisible(true);
-        setSize(400,600);
+        setSize(400, 600);
         setResizable(false);
+        util = new Utilities();
+        ground = new Ground();
+
+        plane = new Plane();
+        plane.x = (400 - 25) / 2;
+        plane.y = 600 - 44;
 
         addWindowListener(new WindowAdapter() {
 
@@ -59,17 +67,12 @@ public class GameWindow extends Frame{
         });
 
 
-
         //1: load image
-        backgroundImage = loadImageFromRes("background.png");
-        planeImage = loadImageFromRes("plane4.png");
-        bombImage = loadImageFromRes("bomb.png");
-        enemyImage = loadImageFromRes("plane1.png");
-
+        plane.image = util.loadImageFromRes("plane4.png");
 
         //2: draw image
-      //  update(getGraphics());
-        repaint();
+        //  update(getGraphics());
+        //     repaint();
 
 
         addKeyListener(new KeyAdapter() {
@@ -99,10 +102,11 @@ public class GameWindow extends Frame{
 //                        break;
 //
 //                }
-                switch (e.getKeyCode()){
+
+                switch (e.getKeyCode()) {
                     case KeyEvent.VK_RIGHT:
                         //press right key
-                        isKeyRight=true;
+                        isKeyRight = true;
                         break;
                     case KeyEvent.VK_LEFT:
                         //press left key
@@ -117,23 +121,19 @@ public class GameWindow extends Frame{
                         iskeyDown = true;
                         break;
                     case KeyEvent.VK_SPACE:
-                        playerBullet = new PlayerBullet();
-                        playerBullet.image = loadImageFromRes("bullet.png");
-                        playerBullet.x = planeX+planeImage.getWidth(null)/4;
-                        playerBullet.y = planeY;
+                        isSpace = true;
                         break;
                 }
-
-                movePlane();
+                //   movePlane();
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
                 super.keyReleased(e);
-                switch (e.getKeyCode()){
+                switch (e.getKeyCode()) {
                     case KeyEvent.VK_RIGHT:
                         //Released Right key
-                        isKeyRight=false;
+                        isKeyRight = false;
                         break;
                     case KeyEvent.VK_LEFT:
                         //Released Left key
@@ -147,25 +147,85 @@ public class GameWindow extends Frame{
                         //Released Down key
                         iskeyDown = false;
                         break;
+                    case KeyEvent.VK_SPACE:
+                        //Released Space
+                        isSpace = false;
+                        break;
                 }
             }
+
         });
 
 
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true){
-                    try{
+                while (true) {
+                    count++;
+                    movePlane();
+                    isEnemyDie();
+                    if (count % 150 == 0) {
+                        Enemy enemy = new Enemy();
+                        enemy.image = util.loadImageFromRes("plane1.png");
+                        enemy.y = -30;
+                        enemy.x = util.getRandom(350);
+                        enemies.add(enemy);
+
+                    }
+
+                    if (count % 200 == 0) {
+                        Island island = new Island();
+                        switch (util.getRandom(2)) {
+                            case 0:
+                                island.image = util.loadImageFromRes("island.png");
+                                break;
+                            case 1:
+                                island.image = util.loadImageFromRes("island-2.png");
+                                break;
+                        }
+                        island.y = -30;
+                        island.x = util.getRandom(350);
+                        islands.add(island);
+                    }
+
+                    if (count % 80 == 0) {
+                        for (Enemy enemy : enemies) {
+                            if (enemy != null) {
+                                EnemyBullet enemyBullet = new EnemyBullet();
+                                enemyBullet.image = util.loadImageFromRes("enemy_bullet.png");
+                                enemyBullet.x = enemy.x + enemy.image.getWidth(null) / 4;
+                                enemyBullet.y = enemy.y;
+                                enemyBullets.add(enemyBullet);
+                            }
+                        }
+                    }
+
+
+                    ground.Update();
+                    for (Enemy enemy : enemies) {
+                        enemy.y += 2;
+                    }
+                    for (EnemyBullet enemyBullet : enemyBullets) {
+                        enemyBullet.y += 10;
+                    }
+                    for (PlayerBullet playerBullet : playerBullets) {
+                        playerBullet.y -= 7;
+                    }
+                    for (Island island : islands) {
+                        island.y += 1;
+                    }
+
+                    try {
 
                         Thread.sleep(17);
-                    }catch (Exception ex){
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                     }
+
+                    removeObjectOutOfScreen();
                     repaint();
-                    enemyY++;
-                    if(playerBullet!=null){
-                        playerBullet.y-=10;
+                    if (count == 3000) {
+                        count = 0;
                     }
                 }
             }
@@ -176,50 +236,107 @@ public class GameWindow extends Frame{
         thread.start();
     }
 
+    private void removeObjectOutOfScreen() {
+        Iterator playerBulletIterator = playerBullets.iterator();
+        while (playerBulletIterator.hasNext()) {
+            PlayerBullet playerBullet = (PlayerBullet) playerBulletIterator.next();
+            if (playerBullet.y < 0) {
+                playerBulletIterator.remove();
+            }
+        }
+        Iterator enemyIterator = enemies.iterator();
+        while (enemyIterator.hasNext()) {
+            Enemy enemy = (Enemy) enemyIterator.next();
+            if (enemy.y > 600) {
+                enemyIterator.remove();
+            }
+        }
+        Iterator enemyBulletIterator = enemyBullets.iterator();
+        while (enemyBulletIterator.hasNext()) {
+            EnemyBullet enemyBullet = (EnemyBullet) enemyBulletIterator.next();
+            if (enemyBullet.y > 600) {
+                enemyBulletIterator.remove();
+            }
+        }
+    }
 
-    private void movePlane(){
+    private void isEnemyDie() {
+        Iterator enemyItr = enemies.iterator();
+        Iterator playerBulletItr = playerBullets.iterator();
+        while (enemyItr.hasNext()) {
+            Enemy enemy = (Enemy) enemyItr.next();
+            while (playerBulletItr.hasNext()) {
+                PlayerBullet playerBullet = (PlayerBullet) playerBulletItr.next();
+                if ((playerBullet.x > enemy.x && playerBullet.x < (enemy.x + enemy.image.getWidth(null))) && ((enemy.y + enemy.image.getHeight(null) / 2) > playerBullet.y)) {
+                    playerBulletItr.remove();
+                    enemyItr.remove();
+                    break;
+                }
+            }
+        }
+    }
+
+
+    private void movePlane() {
         //move plane to right
-        if(isKeyRight && (planeX + 10)< (SCREEN_WIDTH - 50)){
-            planeX+=SPEED;
+        if (isKeyRight && (plane.x + 10) < (SCREEN_WIDTH - 25)) {
+            plane.x += SPEED;
         }
         //move plane to left
-        if(isKeyLeft && (planeX - 10)> -5){
-            planeX-=SPEED;
+        if (isKeyLeft && (plane.x - 10) > -5) {
+            plane.x -= SPEED;
         }
         //move plane to up
-        if(isKeyUp && (planeY - 10)>20){
-            planeY-=SPEED;
+        if (isKeyUp && (plane.y - 10) > 20) {
+            plane.y -= SPEED;
         }
         //move plane to down
-        if(iskeyDown && (planeY + 10)<(SCREEN_HIGHT-35)){
-            planeY+=SPEED;
+        if (iskeyDown && (plane.y + 10) < (SCREEN_HIGHT - 35)) {
+            plane.y += SPEED;
+        }
+        //shotting bullet
+        if (isSpace && (getSystemTime() - lasttimepress > 200)) {
+            PlayerBullet playerBullet = new PlayerBullet();
+            playerBullet.image = util.loadImageFromRes("bullet.png");
+            playerBullet.x = plane.x + plane.image.getWidth(null) / 4;
+            playerBullet.y = plane.y;
+            playerBullets.add(playerBullet);
+            lasttimepress = getSystemTime();
         }
 
     }
 
-
-    private Image loadImageFromRes(String url){
-        try {
-            Image image = ImageIO.read(new File("resources/"+url));
-            return image;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-    }
 
     @Override
     public void update(Graphics g) {
-        if(backBufferImage!=null) {
-            backGraphics.drawImage(backgroundImage, 0, 0, SCREEN_WIDTH, SCREEN_HIGHT, null);
-            backGraphics.drawImage(planeImage, planeX, planeY, planeImage.getWidth(null)/2, planeImage.getHeight(null)/2, null);
-            backGraphics.drawImage(enemyImage,enemyX,enemyY,50,44,null);
-            if(playerBullet!=null) {
+        if (backBufferImage != null) {
+            isEnemyDie();
+
+            ground.Paint(backGraphics);
+            for (Island island : islands) {
+                backGraphics.drawImage(island.image, island.x, island.y, island.image.getWidth(null), island.image.getHeight(null), null);
+            }
+            backGraphics.drawImage(plane.image, plane.x, plane.y, plane.image.getWidth(null) / 2, plane.image.getHeight(null) / 2, null);
+            for (PlayerBullet playerBullet : playerBullets) {
                 backGraphics.drawImage(playerBullet.image, playerBullet.x, playerBullet.y, 10, 10, null);
             }
-            //     g.drawImage(bombImage,50,100,10,10,null);
+            for (Enemy enemy : enemies) {
+                backGraphics.drawImage(enemy.image, enemy.x, enemy.y, enemy.image.getWidth(null), enemy.image.getHeight(null), null);
+
+            }
+
+            for (EnemyBullet enemyBullet : enemyBullets) {
+                if (enemyBullet != null) {
+                    backGraphics.drawImage(enemyBullet.image, enemyBullet.x, enemyBullet.y, enemyBullet.image.getWidth(null), enemyBullet.image.getHeight(null), null);
+                }
+            }
+
             g.drawImage(backBufferImage, 0, 0, null);
+            isEnemyDie();
         }
+    }
+
+    private long getSystemTime() {
+        return System.currentTimeMillis();
     }
 }
