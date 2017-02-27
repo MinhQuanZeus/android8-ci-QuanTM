@@ -251,10 +251,9 @@ public class GameWindow extends Frame {
             EnemyController enemy = (EnemyController) enemyItr.next();
             while (playerBulletItr.hasNext()) {
                 PlayerBulletController playerBullet = (PlayerBulletController) playerBulletItr.next();
-                if ((playerBullet.getX() > enemy.getX() && playerBullet.getX() < (enemy.getX() + enemy.getWidth())) && ((enemy.getY() + enemy.getHeight() / 2) < playerBullet.getY())) {
+                if ((playerBullet.getX() > enemy.getX() && playerBullet.getX() < (enemy.getX() + enemy.getWidth())) && ((enemy.getY() + enemy.getHeight() / 2) > playerBullet.getY())) {
                     playerBulletItr.remove();
                     enemyItr.remove();
-                    System.out.println("die");
                     break;
                 }
             }

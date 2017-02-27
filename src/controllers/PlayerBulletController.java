@@ -35,6 +35,6 @@ public class PlayerBulletController {
         return model.getX();
     }
     public int getY(){
-        return model.getX();
+        return model.getY();
     }
 }
