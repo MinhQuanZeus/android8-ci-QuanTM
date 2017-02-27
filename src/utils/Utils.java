@@ -1,3 +1,5 @@
+package utils;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
@@ -7,8 +9,8 @@ import java.util.Random;
 /**
  * Created by QuanT on 2/25/2017.
  */
-public class Utilities {
-    public Image loadImageFromRes(String url) {
+public class Utils {
+    public static Image loadImageFromRes(String url) {
         try {
             Image image = ImageIO.read(new File("resources/" + url));
             return image;
@@ -18,7 +20,7 @@ public class Utilities {
         }
 
     }
-    public int getRandom(int max) {
+    public static int getRandom(int max) {
         Random random = new Random();
         int a;
         a = random.nextInt(max);

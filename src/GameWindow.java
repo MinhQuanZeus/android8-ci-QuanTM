@@ -1,3 +1,6 @@
+import controllers.*;
+import utils.Utils;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -6,6 +9,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * Created by QuanT on 2/19/2017.
@@ -23,33 +27,30 @@ public class GameWindow extends Frame {
     private boolean isKeyRight = false;
     private boolean isSpace = false;
 
-
-    public Plane plane;
-    private Utilities util;
-    private Ground ground;
+    private PlaneController planeController;
+    private Utils util;
+    private GroundController groundController;
 
     private BufferedImage backBufferImage;
     private Graphics backGraphics;
 
     Thread thread;
     int count = 0;
-    private ArrayList<PlayerBullet> playerBullets = new ArrayList<>();
-    private ArrayList<Enemy> enemies = new ArrayList<>();
-    private ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
-    private ArrayList<Island> islands = new ArrayList<>();
+    private Vector<PlayerBulletController> playerBullets = new Vector<>();
+    private Vector<EnemyController> enemies = new Vector<>();
+    private Vector<EnemyBulletController> enemyBullets = new Vector<>();
+    private Vector<IslandController> islands = new Vector<>();
     long lasttimepress = 0;
 
 
     public GameWindow() {
         setVisible(true);
         setSize(400, 600);
-        setResizable(false);
-        util = new Utilities();
-        ground = new Ground();
+        util = new Utils();
+        groundController = new GroundController();
 
-        plane = new Plane();
-        plane.x = (400 - 25) / 2;
-        plane.y = 600 - 44;
+
+        planeController = new PlaneController((SCREEN_WIDTH-22)/2,SCREEN_HIGHT-70);
 
         addWindowListener(new WindowAdapter() {
 
@@ -68,12 +69,8 @@ public class GameWindow extends Frame {
 
 
         //1: load image
-        plane.image = util.loadImageFromRes("plane4.png");
 
         //2: draw image
-        //  update(getGraphics());
-        //     repaint();
-
 
         addKeyListener(new KeyAdapter() {
             @Override
@@ -164,57 +161,44 @@ public class GameWindow extends Frame {
                     count++;
                     movePlane();
                     isEnemyDie();
+
                     if (count % 150 == 0) {
-                        Enemy enemy = new Enemy();
-                        enemy.image = util.loadImageFromRes("plane1.png");
-                        enemy.y = -30;
-                        enemy.x = util.getRandom(350);
+                        EnemyController enemy = new EnemyController(util.getRandom(350),-30);
                         enemies.add(enemy);
 
                     }
 
                     if (count % 200 == 0) {
-                        Island island = new Island();
-                        switch (util.getRandom(2)) {
-                            case 0:
-                                island.image = util.loadImageFromRes("island.png");
-                                break;
-                            case 1:
-                                island.image = util.loadImageFromRes("island-2.png");
-                                break;
-                        }
-                        island.y = -30;
-                        island.x = util.getRandom(350);
+                        IslandController island = new IslandController(util.getRandom(350),-30);
                         islands.add(island);
                     }
 
                     if (count % 80 == 0) {
-                        for (Enemy enemy : enemies) {
+                        for (EnemyController enemy : enemies) {
                             if (enemy != null) {
-                                EnemyBullet enemyBullet = new EnemyBullet();
-                                enemyBullet.image = util.loadImageFromRes("enemy_bullet.png");
-                                enemyBullet.x = enemy.x + enemy.image.getWidth(null) / 4;
-                                enemyBullet.y = enemy.y;
+                                EnemyBulletController enemyBullet = new EnemyBulletController(enemy.getX() + enemy.getImage().getWidth(null) / 4,enemy.getY());
                                 enemyBullets.add(enemyBullet);
                             }
                         }
                     }
 
+              //      System.out.println("Enemies: "+enemies.size());
+                  //  System.out.println("Bullets player: "+playerBullets.size());
 
-                    ground.Update();
-                    for (Enemy enemy : enemies) {
-                        enemy.y += 2;
+                    groundController.Update();
+                    for (EnemyController enemy : enemies) {
+                        enemy.run();
                     }
-                    for (EnemyBullet enemyBullet : enemyBullets) {
-                        enemyBullet.y += 10;
+                    for (EnemyBulletController enemyBullet : enemyBullets) {
+                        enemyBullet.run();
                     }
-                    for (PlayerBullet playerBullet : playerBullets) {
-                        playerBullet.y -= 7;
+                    for (PlayerBulletController playerBullet : playerBullets) {
+                        playerBullet.run();
                     }
-                    for (Island island : islands) {
-                        island.y += 1;
+                    for (IslandController island : islands) {
+                        island.run();
                     }
-
+                    removeObjectOutOfScreen();
                     try {
 
                         Thread.sleep(17);
@@ -222,7 +206,7 @@ public class GameWindow extends Frame {
                         ex.printStackTrace();
                     }
 
-                    removeObjectOutOfScreen();
+
                     repaint();
                     if (count == 3000) {
                         count = 0;
@@ -239,22 +223,22 @@ public class GameWindow extends Frame {
     private void removeObjectOutOfScreen() {
         Iterator playerBulletIterator = playerBullets.iterator();
         while (playerBulletIterator.hasNext()) {
-            PlayerBullet playerBullet = (PlayerBullet) playerBulletIterator.next();
-            if (playerBullet.y < 0) {
+            PlayerBulletController playerBullet = (PlayerBulletController) playerBulletIterator.next();
+            if (playerBullet.getY() < 0) {
                 playerBulletIterator.remove();
             }
         }
         Iterator enemyIterator = enemies.iterator();
         while (enemyIterator.hasNext()) {
-            Enemy enemy = (Enemy) enemyIterator.next();
-            if (enemy.y > 600) {
+            EnemyController enemy = (EnemyController) enemyIterator.next();
+            if (enemy.getY() > 600) {
                 enemyIterator.remove();
             }
         }
         Iterator enemyBulletIterator = enemyBullets.iterator();
         while (enemyBulletIterator.hasNext()) {
-            EnemyBullet enemyBullet = (EnemyBullet) enemyBulletIterator.next();
-            if (enemyBullet.y > 600) {
+            EnemyBulletController enemyBullet = (EnemyBulletController) enemyBulletIterator.next();
+            if (enemyBullet.getY() > 600) {
                 enemyBulletIterator.remove();
             }
         }
@@ -264,12 +248,13 @@ public class GameWindow extends Frame {
         Iterator enemyItr = enemies.iterator();
         Iterator playerBulletItr = playerBullets.iterator();
         while (enemyItr.hasNext()) {
-            Enemy enemy = (Enemy) enemyItr.next();
+            EnemyController enemy = (EnemyController) enemyItr.next();
             while (playerBulletItr.hasNext()) {
-                PlayerBullet playerBullet = (PlayerBullet) playerBulletItr.next();
-                if ((playerBullet.x > enemy.x && playerBullet.x < (enemy.x + enemy.image.getWidth(null))) && ((enemy.y + enemy.image.getHeight(null) / 2) > playerBullet.y)) {
+                PlayerBulletController playerBullet = (PlayerBulletController) playerBulletItr.next();
+                if ((playerBullet.getX() > enemy.getX() && playerBullet.getX() < (enemy.getX() + enemy.getWidth())) && ((enemy.getY() + enemy.getHeight() / 2) < playerBullet.getY())) {
                     playerBulletItr.remove();
                     enemyItr.remove();
+                    System.out.println("die");
                     break;
                 }
             }
@@ -279,28 +264,29 @@ public class GameWindow extends Frame {
 
     private void movePlane() {
         //move plane to right
-        if (isKeyRight && (plane.x + 10) < (SCREEN_WIDTH - 25)) {
-            plane.x += SPEED;
+        if (isKeyRight && (planeController.getX() + 10) < (SCREEN_WIDTH - 25)) {
+         //   plane.x += SPEED;
+            planeController.moveRight();
         }
         //move plane to left
-        if (isKeyLeft && (plane.x - 10) > -5) {
-            plane.x -= SPEED;
+        if (isKeyLeft && (planeController.getX() - 10) > -5) {
+         ///   plane.x -= SPEED;
+            planeController.moveLeft();
         }
         //move plane to up
-        if (isKeyUp && (plane.y - 10) > 20) {
-            plane.y -= SPEED;
+        if (isKeyUp && (planeController.getY() - 10) > 20) {
+         //   plane.y -= SPEED;
+            planeController.moveUp();
         }
         //move plane to down
-        if (iskeyDown && (plane.y + 10) < (SCREEN_HIGHT - 35)) {
-            plane.y += SPEED;
+        if (iskeyDown && (planeController.getY() + 10) < (SCREEN_HIGHT - 35)) {
+         //   plane.y += SPEED;
+            planeController.moveDown();
         }
         //shotting bullet
         if (isSpace && (getSystemTime() - lasttimepress > 200)) {
-            PlayerBullet playerBullet = new PlayerBullet();
-            playerBullet.image = util.loadImageFromRes("bullet.png");
-            playerBullet.x = plane.x + plane.image.getWidth(null) / 4;
-            playerBullet.y = plane.y;
-            playerBullets.add(playerBullet);
+            PlayerBulletController playerBulletController = new PlayerBulletController(planeController.getX() + planeController.getWidth() / 2,planeController.getY());
+            playerBullets.add(playerBulletController);
             lasttimepress = getSystemTime();
         }
 
@@ -310,29 +296,23 @@ public class GameWindow extends Frame {
     @Override
     public void update(Graphics g) {
         if (backBufferImage != null) {
-            isEnemyDie();
-
-            ground.Paint(backGraphics);
-            for (Island island : islands) {
-                backGraphics.drawImage(island.image, island.x, island.y, island.image.getWidth(null), island.image.getHeight(null), null);
+            groundController.Paint(backGraphics);
+            for (IslandController island : islands) {
+                island.draw(backGraphics);
             }
-            backGraphics.drawImage(plane.image, plane.x, plane.y, plane.image.getWidth(null) / 2, plane.image.getHeight(null) / 2, null);
-            for (PlayerBullet playerBullet : playerBullets) {
-                backGraphics.drawImage(playerBullet.image, playerBullet.x, playerBullet.y, 10, 10, null);
-            }
-            for (Enemy enemy : enemies) {
-                backGraphics.drawImage(enemy.image, enemy.x, enemy.y, enemy.image.getWidth(null), enemy.image.getHeight(null), null);
+            planeController.draw(backGraphics);
+            for (PlayerBulletController playerBulletController : playerBullets) {
 
+                playerBulletController.draw(backGraphics);
             }
-
-            for (EnemyBullet enemyBullet : enemyBullets) {
-                if (enemyBullet != null) {
-                    backGraphics.drawImage(enemyBullet.image, enemyBullet.x, enemyBullet.y, enemyBullet.image.getWidth(null), enemyBullet.image.getHeight(null), null);
-                }
+            for (EnemyController enemy : enemies) {
+                    enemy.draw(backGraphics);
+            }
+            for (EnemyBulletController enemyBullet : enemyBullets) {
+                    enemyBullet.draw(backGraphics);
             }
 
             g.drawImage(backBufferImage, 0, 0, null);
-            isEnemyDie();
         }
     }
 

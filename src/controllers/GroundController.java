@@ -1,19 +1,20 @@
+package controllers;
+
+import utils.Utils;
+
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.Random;
 
 /**
  * Created by QuanT on 2/25/2017.
  */
-public class Ground {
+public class GroundController {
     private Image groundImage;
-    private Image islandImage;
 
     private int x1, y1, x2, y2;
-    Utilities util;
+    private Utils util;
 
-    public Ground() {
-        util = new Utilities();
+    public GroundController() {
+        util = new Utils();
             groundImage = util.loadImageFromRes("background.png");
         x1 = 0;
         y1 = 0;
