@@ -1,6 +1,8 @@
 package controllers;
 
+import models.GroundModel;
 import utils.Utils;
+import views.GroundView;
 
 import java.awt.*;
 
@@ -12,6 +14,11 @@ public class GroundController {
 
     private int x1, y1, x2, y2;
     private Utils util;
+
+    private GroundModel model1;
+    private GroundModel model2;
+    private GroundView view1;
+    private GroundView view2;
 
     public GroundController() {
         util = new Utils();

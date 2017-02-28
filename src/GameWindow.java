@@ -156,7 +156,7 @@ public class GameWindow extends Frame {
 
         thread = new Thread(new Runnable() {
             @Override
-            public void run() {
+            public synchronized void run() {
                 while (true) {
                     count++;
                     movePlane();
@@ -220,7 +220,7 @@ public class GameWindow extends Frame {
         thread.start();
     }
 
-    private void removeObjectOutOfScreen() {
+    private synchronized void removeObjectOutOfScreen() {
         Iterator playerBulletIterator = playerBullets.iterator();
         while (playerBulletIterator.hasNext()) {
             PlayerBulletController playerBullet = (PlayerBulletController) playerBulletIterator.next();
@@ -244,7 +244,7 @@ public class GameWindow extends Frame {
         }
     }
 
-    private void isEnemyDie() {
+    private synchronized void isEnemyDie() {
         Iterator enemyItr = enemies.iterator();
         Iterator playerBulletItr = playerBullets.iterator();
         while (enemyItr.hasNext()) {
@@ -261,7 +261,7 @@ public class GameWindow extends Frame {
     }
 
 
-    private void movePlane() {
+    private synchronized void movePlane() {
         //move plane to right
         if (isKeyRight && (planeController.getX() + 10) < (SCREEN_WIDTH - 25)) {
          //   plane.x += SPEED;
@@ -293,7 +293,7 @@ public class GameWindow extends Frame {
 
 
     @Override
-    public void update(Graphics g) {
+    public synchronized void update(Graphics g) {
         if (backBufferImage != null) {
             groundController.Paint(backGraphics);
             for (IslandController island : islands) {
@@ -315,7 +315,7 @@ public class GameWindow extends Frame {
         }
     }
 
-    private long getSystemTime() {
+    private synchronized long getSystemTime() {
         return System.currentTimeMillis();
     }
 }
