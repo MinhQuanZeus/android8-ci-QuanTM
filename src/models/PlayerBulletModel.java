@@ -3,37 +3,22 @@ package models;
 /**
  * Created by QuanT on 2/26/2017.
  */
-public class PlayerBulletModel {
+public class PlayerBulletModel extends GameModel {
     private static final int SPEED = 15;
-    private int x;
-    private int y;
-    private int width;
-    private int height;
+    public final static int WIDTH = 13;
+    public final static int HEIGHT = 30;
+    private int damage;
 
-    public PlayerBulletModel(int x, int y, int width, int height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+    public PlayerBulletModel(int x, int y) {
+        this(x, y, 2);
     }
 
-    public int getX() {
-        return x;
+    public PlayerBulletModel(int x, int y, int damage) {
+        super(x, y, WIDTH, HEIGHT);
+        this.damage = damage;
     }
 
-    public int getY() {
-        return y;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void fly(){
-        y-=SPEED;
+    public int getDamage() {
+        return damage;
     }
 }

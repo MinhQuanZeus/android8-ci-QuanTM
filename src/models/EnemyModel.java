@@ -3,37 +3,23 @@ package models;
 /**
  * Created by QuanT on 2/27/2017.
  */
-public class EnemyModel {
-    private static final int SPEED = 7;
-    private int x;
-    private int y;
-    private int width;
-    private int height;
+public class EnemyModel extends GameModelWithHP {
+    public static final int DEFAULT_WIDTH = 45;
+    public static final int DEFAULT_HEIGHT = 30;
 
     public EnemyModel(int x, int y, int width, int height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        this(x, y, width, height, 3);
     }
 
-    public int getX() {
-        return x;
+    public EnemyModel(int x, int y, int width, int height, int maxHP) {
+        super(x, y, width, height, maxHP);
     }
 
-    public int getY() {
-        return y;
+    public EnemyModel(int x, int y, int maxHP) {
+        this(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, maxHP);
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void run(){
-        y+=SPEED;
+    public EnemyModel(int x, int y) {
+        this(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 }

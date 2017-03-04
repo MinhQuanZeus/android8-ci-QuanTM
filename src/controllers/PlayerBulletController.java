@@ -1,40 +1,65 @@
 package controllers;
 
+import controllers.EnemyControllers.EnemyController;
+import models.GameModel;
+import models.GameModelWithHP;
 import models.PlayerBulletModel;
 import utils.Utils;
+import views.GameView;
 import views.PlayerBulletView;
+
 import java.awt.*;
 
 /**
  * Created by QuanT on 2/26/2017.
  */
-public class PlayerBulletController {
+public class PlayerBulletController extends GameController implements Colliable {
+    private static final int SPEED = 15;
 
-    private PlayerBulletModel model;
-    private PlayerBulletView view;
-
-    public PlayerBulletController(PlayerBulletModel model, PlayerBulletView view) {
-        this.model = model;
-        this.view = view;
+    public PlayerBulletController(PlayerBulletModel model, GameView view) {
+        super(model, view);
+        this.vector.dy = -SPEED;
+        CollsionPool.instance.add(this);
     }
 
-    public PlayerBulletController(int x, int y) {
-        this(new PlayerBulletModel(x, y, 13, 30),
-                new PlayerBulletView(Utils.loadImageFromRes("bullet.png")));
+
+    public int getX() {
+        return model.getX();
     }
 
+    public int getY() {
+        return model.getY();
+    }
+
+    @Override
     public void run() {
-        model.fly();
+        super.run();
+        if (model.getY() < 0) {
+            model.destroy();
+        }
     }
 
     public void draw(Graphics graphics) {
         view.draw(graphics, model);
     }
 
-    public int getX(){
-        return model.getX();
+    @Override
+    public GameModel getGameModel() {
+        return model;
     }
-    public int getY(){
-        return model.getY();
+
+    @Override
+    public void onCollide(Colliable colliable) {
+     //   this.getModel().destroy();
+        if (colliable instanceof EnemyController) {
+            PlayerBulletModel bullet = (PlayerBulletModel) model;
+            ((GameModelWithHP) ((EnemyController) colliable).getModel()).decreaseHP(bullet.getDamage());
+            this.getModel().destroy();
+        }
+        if (colliable instanceof IslandController) {
+            PlayerBulletModel bullet = (PlayerBulletModel) model;
+            ((GameModelWithHP) ((IslandController) colliable).getModel()).decreaseHP(bullet.getDamage());
+            this.getModel().destroy();
+        }
     }
 }
