@@ -46,7 +46,7 @@ public class PowerUpController extends GameController implements Colliable {
     public void onCollide(Colliable colliable) {
         if (colliable instanceof PlaneController) {
             ((PlaneController) colliable).setBulletImage(Utils.loadImageFromRes("bullet-double.png"));
-            ((PlaneController) colliable).setBulletDamage(5);
+            ((PlaneController) colliable).planeLevelUp();
             this.getModel().destroy();
         }
     }
