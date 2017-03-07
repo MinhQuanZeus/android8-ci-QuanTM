@@ -18,7 +18,7 @@ public class PlayerBulletRightController extends GameController implements Colli
     public PlayerBulletRightController(PlayerBulletModel model, GameView view) {
         super(model, view);
         this.vector.dy = -SPEED;
-        this.vector.dx = SPEED;
+        this.vector.dx = SPEED - 4;
         CollsionPool.instance.add(this);
     }
 
@@ -34,7 +34,7 @@ public class PlayerBulletRightController extends GameController implements Colli
     @Override
     public void run() {
         super.run();
-        if (model.getY() < 0||model.getX()> GameSetting.SCREEN_WIDTH) {
+        if (model.getY() < 0 || model.getX() > GameSetting.SCREEN_WIDTH) {
             model.destroy();
         }
     }
@@ -50,7 +50,6 @@ public class PlayerBulletRightController extends GameController implements Colli
 
     @Override
     public void onCollide(Colliable colliable) {
-        //   this.getModel().destroy();
         if (colliable instanceof EnemyController) {
             PlayerBulletModel bullet = (PlayerBulletModel) model;
             ((GameModelWithHP) ((EnemyController) colliable).getModel()).decreaseHP(bullet.getDamage());

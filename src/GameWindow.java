@@ -1,4 +1,5 @@
 import controllers.*;
+import controllers.BombController.BombManager;
 import controllers.EnemyControllers.EnemyBulletManage;
 import controllers.EnemyControllers.EnemyManage;
 import controllers.PowerUpManager;
@@ -51,6 +52,7 @@ public class GameWindow extends Frame {
                     EnemyBulletManage.instance.run();
                     EnemyManage.instance.run();
                     PowerUpManager.instance.run();
+                    BombManager.instance.run();
                     IslanManager.instance.run();
                     CollsionPool.instance.run();
                     groundController.Update();
@@ -81,6 +83,7 @@ public class GameWindow extends Frame {
             EnemyManage.instance.draw(backGraphics);
             EnemyBulletManage.instance.draw(backGraphics);
             PowerUpManager.instance.draw(backGraphics);
+            BombManager.instance.draw(backGraphics);
             g.drawImage(backBufferImage, 0, 0, null);
         }
     }

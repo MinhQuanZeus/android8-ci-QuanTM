@@ -17,18 +17,18 @@ public class FollowShotBehavior implements ShotBehavior {
         count++;
         if(count>= SHOT_PERIOD){
             count=0;
-            GameModel gameObject = enemyController.getModel();
+            GameModel model = enemyController.getModel();
             EnemyBulletController enemyBulletController =
                     new EnemyBulletController(
                             new EnemyBulletModel(
-                                    gameObject.getMiddleX() - EnemyBulletModel.SIZE / 2,
-                                    gameObject.getBottom()),
+                                    model.getMiddleX() - EnemyBulletModel.SIZE / 2,
+                                    model.getBottom()),
                             new GameView("enemy_bullet.png")
                     );
             int dx = PlaneController.instance.getModel().getX() -
-                    gameObject.getX();
+                    model.getX();
             int dy = PlaneController.instance.getModel().getY() -
-                    gameObject.getY();
+                    model.getY();
 
             if (dy > 0) {
                 double ratio = Math.sqrt(dx * dx + dy * dy) / BULLET_SPEED;

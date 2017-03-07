@@ -1,5 +1,8 @@
 package controllers.EnemyControllers;
 
+import controllers.BombController.BombSubcriber;
+import controllers.BombController.FreezzeSubcriber;
+import controllers.BombController.Notification;
 import controllers.Colliable;
 import controllers.CollsionPool;
 import controllers.GameController;
@@ -14,16 +17,34 @@ import java.awt.*;
 /**
  * Created by QuanT on 2/27/2017.
  */
-public class EnemyController extends GameController implements Colliable {
+public class EnemyController extends GameController implements Colliable, BombSubcriber, FreezzeSubcriber {
     public static final int SPEED = 2;
     private ShotBehavior shotBehavior;
     private FlyBehavior flyBehavior;
+    private FreezeBehavior freezeBehavior;
+    private EnemyState enemyState;
+    private int frezzeCount;
 
-    public EnemyController(EnemyModel gameObject, GameView gameDrawer, FlyBehavior flyBehavior, ShotBehavior shotBehavior) {
-        super(gameObject, gameDrawer);
+    public EnemyController(EnemyModel model, GameView view,FreezeBehavior freezeBehavior, FlyBehavior flyBehavior, ShotBehavior shotBehavior) {
+        super(model, view);
         CollsionPool.instance.add(this);
+        Notification.instance.subsribe(this);
+        enemyState = EnemyState.NORMAL;
+        Notification.instance.subsribeFrezze(this);
+        this.freezeBehavior = freezeBehavior;
         this.flyBehavior = flyBehavior;
         this.shotBehavior = shotBehavior;
+    }
+
+    @Override
+    public void onBombExplode(int x, int y) {
+        model.destroy();
+    }
+
+    @Override
+    public void onFrezze(int x, int y) {
+        enemyState = EnemyState.FREZEED;
+        frezzeCount = 0;
     }
 
     @Override
@@ -44,6 +65,7 @@ public class EnemyController extends GameController implements Colliable {
                 enemyController = new EnemyController(
                         new EnemyModel(x, y),
                         new GameView("enemy_plane_yellow_1.png"),
+                        new FreezeBehavior(200),
                         new FlyStraight(),
                         new NormalShotBehavior());
 
@@ -52,6 +74,7 @@ public class EnemyController extends GameController implements Colliable {
                 enemyController = new EnemyController(
                         new EnemyModel(x, y),
                         new GameView("enemy_plane_white_1.png"),
+                        new FreezeBehavior(250),
                         new FlyZiczac(),
                         new FollowShotBehavior());
                 break;
@@ -59,9 +82,25 @@ public class EnemyController extends GameController implements Colliable {
         return enemyController;
     }
 
+    public EnemyState getEnemyState() {
+        return enemyState;
+    }
+    public void setEnemyState(EnemyState enemyState) {
+        this.enemyState = enemyState;
+    }
+
     @Override
     public void run() {
-        super.run();
+        switch (this.enemyState) {
+            case NORMAL:
+                super.run();
+                break;
+            case FREZEED:
+                break;
+        }
+        if(freezeBehavior!=null){
+            freezeBehavior.run(this);
+        }
         if (flyBehavior != null) {
             flyBehavior.fly(this);
         }

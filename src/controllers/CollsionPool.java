@@ -40,7 +40,6 @@ public class CollsionPool implements BaseController {
         while(colliableIterator.hasNext()) {
             Colliable colliable = colliableIterator.next();
             if(!colliable.getGameModel().isAlive()) {
-                System.out.println("Die");
                 colliableIterator.remove();
             }
         }

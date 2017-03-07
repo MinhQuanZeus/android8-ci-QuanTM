@@ -17,12 +17,12 @@ public class NormalShotBehavior implements ShotBehavior {
         count++;
         if(count>= SHOT_PERIOD){
             count=0;
-            GameModel gameObject = enemyController.getModel();
+            GameModel model = enemyController.getModel();
             EnemyBulletController enemyBulletController =
                     new EnemyBulletController(
                             new EnemyBulletModel(
-                                    gameObject.getMiddleX() - EnemyBulletModel.SIZE / 2,
-                                    gameObject.getBottom()),
+                                    model.getMiddleX() - EnemyBulletModel.SIZE / 2,
+                                    model.getBottom()),
                             new GameView("enemy_bullet.png")
                     );
                 enemyBulletController.getVector().dy = BULLET_SPEED;

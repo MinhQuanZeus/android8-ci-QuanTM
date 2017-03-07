@@ -17,7 +17,7 @@ public class PlayerBulletLeftController extends GameController implements Collia
     public PlayerBulletLeftController(PlayerBulletModel model, GameView view) {
         super(model, view);
         this.vector.dy = -SPEED;
-        this.vector.dx = -SPEED;
+        this.vector.dx = -(SPEED -4);
         CollsionPool.instance.add(this);
     }
 
@@ -33,7 +33,7 @@ public class PlayerBulletLeftController extends GameController implements Collia
     @Override
     public void run() {
         super.run();
-        if (model.getY() < 0||model.getX()<0) {
+        if (model.getY() < 0 || model.getX() < 0) {
             model.destroy();
         }
     }
