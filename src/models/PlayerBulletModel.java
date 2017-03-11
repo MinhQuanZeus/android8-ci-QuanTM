@@ -4,9 +4,9 @@ package models;
  * Created by QuanT on 2/26/2017.
  */
 public class PlayerBulletModel extends GameModel {
-    private static final int SPEED = 15;
     public final static int WIDTH = 13;
     public final static int HEIGHT = 30;
+    private static final int SPEED = 15;
     private int damage;
 
     public PlayerBulletModel(int x, int y) {

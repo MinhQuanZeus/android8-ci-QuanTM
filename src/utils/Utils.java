@@ -20,6 +20,7 @@ public class Utils {
         }
 
     }
+
     public static int getRandom(int max) {
         Random random = new Random();
         int a;

@@ -1,7 +1,5 @@
 package views;
 
-import models.PlayerBulletModel;
-
 import java.awt.*;
 
 /**

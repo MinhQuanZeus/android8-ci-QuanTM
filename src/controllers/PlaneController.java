@@ -4,6 +4,7 @@ import models.GameModel;
 import utils.GameSetting;
 import models.PlaneModel;
 import models.PlayerBulletModel;
+import utils.SoundPlayer;
 import utils.Utils;
 import views.GameView;
 import views.PlayerBulletView;
@@ -11,6 +12,7 @@ import views.PlayerBulletView;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 
 /**
  * Created by QuanT on 2/27/2017.
@@ -19,6 +21,7 @@ public class PlaneController extends GameController implements KeyListener, Coll
     public static final int SPEED = 10;
     public static final int ATK_SPEED = 7;
     private int count;
+
 
     private ControllerManager bulletManager;
     private KeyInputManage keyInputManage;
@@ -108,32 +111,34 @@ public class PlaneController extends GameController implements KeyListener, Coll
 
         if (keyInputManage.keySpace) {
             if (count > ATK_SPEED) {
-                switch (planeLevel){
+                SoundPlayer shotSound = new SoundPlayer("gun-single-shot.wav");
+                shotSound.play();
+                switch (planeLevel) {
                     case 1:
                         PlayerBulletController bulletController = new PlayerBulletController(
-                                new PlayerBulletModel(this.model.getMiddleX() - PlayerBulletModel.WIDTH / 2, this.model.getY(),bulletDamage),
+                                new PlayerBulletModel(this.model.getMiddleX() - PlayerBulletModel.WIDTH / 2, this.model.getY(), bulletDamage),
                                 new PlayerBulletView(bulletImage)
                         );
                         bulletManager.add(bulletController);
                         break;
                     case 2:
                         PlayerBulletController bulletController1 = new PlayerBulletController(
-                                new PlayerBulletModel(this.model.getMiddleX() - PlayerBulletModel.WIDTH / 2, this.model.getY(),bulletDamage),
+                                new PlayerBulletModel(this.model.getMiddleX() - PlayerBulletModel.WIDTH / 2, this.model.getY(), bulletDamage),
                                 new PlayerBulletView(bulletImage)
                         );
                         bulletManager.add(bulletController1);
                         break;
                     case 3:
                         PlayerBulletController bulletController2 = new PlayerBulletController(
-                                new PlayerBulletModel(this.model.getMiddleX() - PlayerBulletModel.WIDTH / 2, this.model.getY(),bulletDamage),
+                                new PlayerBulletModel(this.model.getMiddleX() - PlayerBulletModel.WIDTH / 2, this.model.getY(), bulletDamage),
                                 new PlayerBulletView(bulletImage)
                         );
                         PlayerBulletLeftController bulletController3 = new PlayerBulletLeftController(
-                                new PlayerBulletModel(this.model.getMiddleX() - PlayerBulletModel.WIDTH / 2, this.model.getY(),bulletDamage),
+                                new PlayerBulletModel(this.model.getMiddleX() - PlayerBulletModel.WIDTH / 2, this.model.getY(), bulletDamage),
                                 new PlayerBulletView(Utils.loadImageFromRes("bullet-right.png"))
                         );
                         PlayerBulletRightController bulletController4 = new PlayerBulletRightController(
-                                new PlayerBulletModel(this.model.getMiddleX() - PlayerBulletModel.WIDTH / 2, this.model.getY(),bulletDamage),
+                                new PlayerBulletModel(this.model.getMiddleX() - PlayerBulletModel.WIDTH / 2, this.model.getY(), bulletDamage),
                                 new PlayerBulletView(Utils.loadImageFromRes("bullet-left.png"))
                         );
                         bulletManager.add(bulletController2);
@@ -153,7 +158,7 @@ public class PlaneController extends GameController implements KeyListener, Coll
     }
 
     public final static PlaneController instance = new PlaneController(
-            new PlaneModel(GameSetting.SCREEN_WIDTH/2-PlaneModel.WIDTH/2, GameSetting.SCREEN_HIGHT-PlaneModel.HEIGHT),
+            new PlaneModel(GameSetting.SCREEN_WIDTH / 2 - PlaneModel.WIDTH / 2, GameSetting.SCREEN_HIGHT - PlaneModel.HEIGHT),
             new GameView("plane2.png")
     );
 
@@ -179,10 +184,10 @@ public class PlaneController extends GameController implements KeyListener, Coll
         this.planeLevel = planeLevel;
     }
 
-    public void planeLevelUp(){
-        if(planeLevel<3){
+    public void planeLevelUp() {
+        if (planeLevel < 3) {
             planeLevel++;
-            bulletDamage +=2;
+            bulletDamage += 2;
         }
     }
 }

@@ -7,5 +7,6 @@ import models.GameModel;
  */
 public interface Colliable {
     GameModel getGameModel();
+
     void onCollide(Colliable colliable);
 }

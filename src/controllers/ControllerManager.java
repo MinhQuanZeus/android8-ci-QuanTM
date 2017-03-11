@@ -21,10 +21,10 @@ public class ControllerManager implements BaseController {
     @Override
     public void draw(Graphics g) {
         synchronized (this.gameControllerVector) {
-            Iterator<GameController> singleControllerIterator =
+            Iterator<GameController> gameControllerIterator =
                     this.gameControllerVector.iterator();
-            while (singleControllerIterator.hasNext()) {
-                GameController gameController = singleControllerIterator.next();
+            while (gameControllerIterator.hasNext()) {
+                GameController gameController = gameControllerIterator.next();
                 if (gameController.getModel().isAlive()) {
                     gameController.draw(g);
                 }
@@ -35,12 +35,12 @@ public class ControllerManager implements BaseController {
     @Override
     public void run() {
         synchronized (this.gameControllerVector) {
-            Iterator<GameController> singleControllerIterator =
+            Iterator<GameController> gameControllerIterator =
                     this.gameControllerVector.iterator();
-            while (singleControllerIterator.hasNext()) {
-                GameController singleController = singleControllerIterator.next();
+            while (gameControllerIterator.hasNext()) {
+                GameController singleController = gameControllerIterator.next();
                 if (!singleController.getModel().isAlive()) {
-                    singleControllerIterator.remove();
+                    gameControllerIterator.remove();
                 } else {
                     singleController.run();
                 }

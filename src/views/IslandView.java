@@ -1,8 +1,6 @@
 package views;
 
 
-import models.IslandModel;
-
 import java.awt.*;
 
 /**

@@ -15,12 +15,12 @@ public class GameView {
         this.image = image;
     }
 
-    public GameView(String url){
+    public GameView(String url) {
         this.image = Utils.loadImageFromRes(url);
     }
 
-    public void draw(Graphics graphics, GameModel model){
-        graphics.drawImage(image,model.getX(),model.getY(),model.getWidth(),model.getHeight(),null);
+    public void draw(Graphics graphics, GameModel model) {
+        graphics.drawImage(image, model.getX(), model.getY(), model.getWidth(), model.getHeight(), null);
     }
 
     public Image getImage() {

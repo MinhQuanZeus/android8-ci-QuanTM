@@ -1,7 +1,5 @@
 package views;
 
-import models.EnemyBulletModel;
-
 import java.awt.*;
 
 /**

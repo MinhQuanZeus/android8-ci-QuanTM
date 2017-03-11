@@ -13,14 +13,17 @@ import java.awt.*;
  */
 public class PowerUpController extends GameController implements Colliable {
     private static final int SPEED = 2;
+
     public PowerUpController(PowerUpModel model, GameView view) {
         super(model, view);
         this.vector.dy = +SPEED;
         CollsionPool.instance.add(this);
     }
+
     public int getX() {
         return model.getX();
     }
+
     public int getY() {
         return model.getY();
     }

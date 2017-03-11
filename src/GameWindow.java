@@ -1,28 +1,26 @@
-import controllers.*;
 import controllers.BombController.BombManager;
+import controllers.*;
 import controllers.EnemyControllers.EnemyBulletManage;
 import controllers.EnemyControllers.EnemyManage;
-import controllers.PowerUpManager;
 import utils.GameSetting;
+import utils.SoundPlayer;
 import utils.Utils;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.util.Vector;
 
 /**
  * Created by QuanT on 2/19/2017.
  */
 public class GameWindow extends Frame {
+    Thread thread;
     private Utils util;
     private GroundController groundController;
-
     private BufferedImage backBufferImage;
     private Graphics backGraphics;
-
-    Thread thread;
+    SoundPlayer soundPlayer;
 
     public GameWindow() {
         setVisible(true);
@@ -44,6 +42,8 @@ public class GameWindow extends Frame {
             }
 
         });
+        soundPlayer = new SoundPlayer("Strikers_1945_II.wav");
+        soundPlayer.playLoop();
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -71,7 +71,6 @@ public class GameWindow extends Frame {
         backGraphics = backBufferImage.getGraphics();
         thread.start();
     }
-
 
 
     @Override

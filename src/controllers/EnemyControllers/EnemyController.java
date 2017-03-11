@@ -8,11 +8,8 @@ import controllers.CollsionPool;
 import controllers.GameController;
 import models.EnemyModel;
 import models.GameModel;
-import utils.Utils;
+import utils.SoundPlayer;
 import views.EnemyView;
-import views.GameView;
-
-import java.awt.*;
 
 /**
  * Created by QuanT on 2/27/2017.
@@ -24,8 +21,9 @@ public class EnemyController extends GameController implements Colliable, BombSu
     private FreezeBehavior freezeBehavior;
     private EnemyState enemyState;
     private int frezzeCount;
+    private boolean isPlaySound = true;
 
-    public EnemyController(EnemyModel model, GameView view,FreezeBehavior freezeBehavior, FlyBehavior flyBehavior, ShotBehavior shotBehavior) {
+    public EnemyController(EnemyModel model, EnemyView view, FreezeBehavior freezeBehavior, FlyBehavior flyBehavior, ShotBehavior shotBehavior) {
         super(model, view);
         CollsionPool.instance.add(this);
         Notification.instance.subsribe(this);
@@ -38,7 +36,14 @@ public class EnemyController extends GameController implements Colliable, BombSu
 
     @Override
     public void onBombExplode(int x, int y) {
-        model.destroy();
+      //  model.destroy();
+        model.explosive();
+        if (model.isExplosive()) {
+            if (!((EnemyView) view).explode()) {
+                model.destroy();
+            }
+        }
+
     }
 
     @Override
@@ -64,7 +69,7 @@ public class EnemyController extends GameController implements Colliable, BombSu
             case YELLOW:
                 enemyController = new EnemyController(
                         new EnemyModel(x, y),
-                        new GameView("enemy_plane_yellow_1.png"),
+                        new EnemyView("enemy_plane_yellow_1.png"),
                         new FreezeBehavior(200),
                         new FlyStraight(),
                         new NormalShotBehavior());
@@ -73,7 +78,7 @@ public class EnemyController extends GameController implements Colliable, BombSu
             case WHITE:
                 enemyController = new EnemyController(
                         new EnemyModel(x, y),
-                        new GameView("enemy_plane_white_1.png"),
+                        new EnemyView("enemy_plane_white_1.png"),
                         new FreezeBehavior(250),
                         new FlyZiczac(),
                         new FollowShotBehavior());
@@ -85,12 +90,14 @@ public class EnemyController extends GameController implements Colliable, BombSu
     public EnemyState getEnemyState() {
         return enemyState;
     }
+
     public void setEnemyState(EnemyState enemyState) {
         this.enemyState = enemyState;
     }
 
     @Override
     public void run() {
+
         switch (this.enemyState) {
             case NORMAL:
                 super.run();
@@ -98,7 +105,12 @@ public class EnemyController extends GameController implements Colliable, BombSu
             case FREZEED:
                 break;
         }
-        if(freezeBehavior!=null){
+        if (model.isExplosive()) {
+            if (!((EnemyView) view).explode()) {
+                model.destroy();
+            }
+        }
+        if (freezeBehavior != null) {
             freezeBehavior.run(this);
         }
         if (flyBehavior != null) {

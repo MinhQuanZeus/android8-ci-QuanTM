@@ -5,6 +5,7 @@ package models;
  */
 public class PowerUpModel extends GameModel {
     public static final int SIZE = 35;
+
     public PowerUpModel(int x, int y, int width, int height) {
         super(x, y, width, height);
     }

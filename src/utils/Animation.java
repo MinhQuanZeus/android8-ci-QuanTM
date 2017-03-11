@@ -15,29 +15,30 @@ public class Animation {
     private int NumOfFrame = 0;
     private int CurrentFrame = 0;
 
-    public Animation(long mesure){
+    public Animation(long mesure) {
         this.mesure = mesure;
     }
 
-    public void Update_Me(long deltaTime){
-        if(NumOfFrame>0){
-            if(deltaTime - beginTime > mesure){
+    public void Update_Me(long deltaTime) {
+        if (NumOfFrame > 0) {
+            if (deltaTime - beginTime > mesure) {
                 CurrentFrame++;
-                if(CurrentFrame>=NumOfFrame)
+                if (CurrentFrame >= NumOfFrame)
                     CurrentFrame = 0;
                 beginTime = deltaTime;
             }
         }
     }
-    public void AddFrame(AFrameOnImage sprite){
+
+    public void AddFrame(AFrameOnImage sprite) {
         AFrameOnImage[] bufferSprites = frames;
-        frames = new AFrameOnImage[NumOfFrame+1];
-        for(int i = 0;i<NumOfFrame;i++) frames[i] = bufferSprites[i];
+        frames = new AFrameOnImage[NumOfFrame + 1];
+        for (int i = 0; i < NumOfFrame; i++) frames[i] = bufferSprites[i];
         frames[NumOfFrame] = sprite;
         NumOfFrame++;
     }
 
-    public void PaintAnims(int x, int y, BufferedImage image, Graphics g, int anchor, float rotation){
+    public void PaintAnims(int x, int y, BufferedImage image, Graphics g, int anchor, float rotation) {
         frames[CurrentFrame].Paint(x, y, image, g, anchor, rotation);
     }
 }

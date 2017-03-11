@@ -13,14 +13,16 @@ import views.GameView;
  */
 public class LockController extends GameController implements Colliable {
     private static final int SPEED = 2;
+
     public LockController(GameModel lockModel, GameView gameDrawer) {
         super(lockModel, gameDrawer);
         vector.dy = SPEED;
         CollsionPool.instance.add(this);
     }
-    public static LockController create(int x , int y){
+
+    public static LockController create(int x, int y) {
         return new LockController(
-                new LockModel(x,y), new GameView("Snowflake.png")
+                new LockModel(x, y), new GameView("Snowflake.png")
         );
     }
 
@@ -32,7 +34,7 @@ public class LockController extends GameController implements Colliable {
 
     @Override
     public void onCollide(Colliable colliable) {
-        if(colliable instanceof PlaneController) {
+        if (colliable instanceof PlaneController) {
             Notification.instance.onFrezze(
                     getGameModel().getX(),
                     getGameModel().getY()

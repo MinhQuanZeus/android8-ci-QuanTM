@@ -25,7 +25,6 @@ public class EnemyManage extends ControllerManager {
             count = 0;
             for (int i = 0; i < 4; i++) {
                 EnemyController enemyController = EnemyController.create(enemyX,enemyY, EnemyPlaneType.WHITE);
-
                 this.add(enemyController);
                 enemyX += 100;
             }

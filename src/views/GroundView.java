@@ -1,7 +1,5 @@
 package views;
 
-import models.GroundModel;
-
 import java.awt.*;
 
 /**

@@ -18,7 +18,6 @@ public class FreezeBehavior {
                 break;
             case FREZEED:
                 count++;
-                System.out.println("Count: "+count);
                 if(count > frezzePeriod) {
                     count = 0;
                     enemyController.setEnemyState(EnemyState.NORMAL);

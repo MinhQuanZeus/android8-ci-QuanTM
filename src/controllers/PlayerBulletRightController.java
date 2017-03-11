@@ -53,12 +53,14 @@ public class PlayerBulletRightController extends GameController implements Colli
         if (colliable instanceof EnemyController) {
             PlayerBulletModel bullet = (PlayerBulletModel) model;
             ((GameModelWithHP) ((EnemyController) colliable).getModel()).decreaseHP(bullet.getDamage());
-            this.getModel().destroy();
+            if(!((GameModelWithHP) ((EnemyController) colliable).getModel()).isExplosive()) {
+                this.getModel().destroy();
+            }
         }
-        if (colliable instanceof IslandController) {
-            PlayerBulletModel bullet = (PlayerBulletModel) model;
-            ((GameModelWithHP) ((IslandController) colliable).getModel()).decreaseHP(bullet.getDamage());
-            this.getModel().destroy();
-        }
+//        if (colliable instanceof IslandController) {
+//            PlayerBulletModel bullet = (PlayerBulletModel) model;
+//            ((GameModelWithHP) ((IslandController) colliable).getModel()).decreaseHP(bullet.getDamage());
+//            this.getModel().destroy();
+//        }
     }
 }

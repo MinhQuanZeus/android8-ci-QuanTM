@@ -17,14 +17,17 @@ import java.awt.*;
  */
 public class IslandController extends GameController implements Colliable {
     private static final int SPEED = 1;
+
     public IslandController(IslandModel model, GameView view) {
         super(model, view);
         this.vector.dy = +SPEED;
         CollsionPool.instance.add(this);
     }
+
     public int getX() {
         return model.getX();
     }
+
     public int getY() {
         return model.getY();
     }
@@ -48,8 +51,8 @@ public class IslandController extends GameController implements Colliable {
 
     @Override
     public void onCollide(Colliable colliable) {
-        if (colliable instanceof PlaneController) {
-            this.getModel().destroy();
-        }
+//        if (colliable instanceof PlaneController) {
+//            this.getModel().destroy();
+//        }
     }
 }

@@ -15,18 +15,20 @@ public class BombManager extends ControllerManager {
     private BombManager() {
         super();
     }
+
     @Override
     public void run() {
         super.run();
         count++;
-        if(count >= BOMB_PERIOD) {
+        if (count >= BOMB_PERIOD) {
             count = 0;
-            BombController bombController = BombController.create(Utils.getRandom(GameSetting.SCREEN_WIDTH),-10);
+            BombController bombController = BombController.create(Utils.getRandom(GameSetting.SCREEN_WIDTH), -10);
             this.add(bombController);
-        }else if(count==LOCK_PERIOD){
-            LockController lockController = LockController.create(Utils.getRandom(GameSetting.SCREEN_WIDTH),-10);
+        } else if (count == LOCK_PERIOD) {
+            LockController lockController = LockController.create(Utils.getRandom(GameSetting.SCREEN_WIDTH), -10);
             this.add(lockController);
         }
     }
+
     public final static BombManager instance = new BombManager();
 }

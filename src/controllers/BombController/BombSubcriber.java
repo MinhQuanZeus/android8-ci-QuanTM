@@ -7,5 +7,6 @@ import models.GameModel;
  */
 public interface BombSubcriber {
     public void onBombExplode(int x, int y);
+
     public GameModel getGameModel();
 }

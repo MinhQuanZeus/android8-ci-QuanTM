@@ -15,15 +15,17 @@ public class PowerUpManager extends ControllerManager {
     private PowerUpManager() {
         super();
     }
+
     @Override
     public void run() {
         super.run();
         count++;
-        if(count == RESPAWN) {
+        if (count == RESPAWN) {
             count = 0;
-                PowerUpController powerUpController = new PowerUpController(new PowerUpModel(Utils.getRandom(GameSetting.SCREEN_WIDTH),-4), new GameView("power-up.png"));
-                this.add(powerUpController);
+            PowerUpController powerUpController = new PowerUpController(new PowerUpModel(Utils.getRandom(GameSetting.SCREEN_WIDTH), -4), new GameView("power-up.png"));
+            this.add(powerUpController);
         }
     }
+
     public final static PowerUpManager instance = new PowerUpManager();
 }

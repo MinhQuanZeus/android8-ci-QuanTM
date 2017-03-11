@@ -14,6 +14,7 @@ public abstract class GameModel {
     protected int height;
 
     protected boolean isAlive;
+    protected boolean isExplosive;
 
     public GameModel(int x, int y, int width, int height) {
         this.x = x;
@@ -21,6 +22,7 @@ public abstract class GameModel {
         this.width = width;
         this.height = height;
         this.isAlive = true;
+        isExplosive = false;
     }
 
     public int getX() {
@@ -64,7 +66,7 @@ public abstract class GameModel {
     }
 
     public int getBottom() {
-        return  this.y + this.height;
+        return this.y + this.height;
     }
 
 
@@ -73,9 +75,9 @@ public abstract class GameModel {
         this.y += gameVector.dy;
     }
 
-    public boolean overlap(GameModel gameObject) {
+    public boolean overlap(GameModel gameModel) {
         Rectangle rect1 = this.getRect();
-        Rectangle rect2 = gameObject.getRect();
+        Rectangle rect2 = gameModel.getRect();
         return rect1.intersects(rect2);
     }
 
@@ -86,6 +88,11 @@ public abstract class GameModel {
     public void destroy() {
         this.isAlive = false;
     }
+    public void explosive() {
+        this.isExplosive = true;
+    }
 
-
+    public boolean isExplosive() {
+        return isExplosive;
+    }
 }

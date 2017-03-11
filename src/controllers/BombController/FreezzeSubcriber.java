@@ -7,5 +7,6 @@ import models.GameModel;
  */
 public interface FreezzeSubcriber {
     void onFrezze(int x, int y);
+
     GameModel getGameModel();
 }

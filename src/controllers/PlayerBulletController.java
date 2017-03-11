@@ -4,6 +4,7 @@ import controllers.EnemyControllers.EnemyController;
 import models.GameModel;
 import models.GameModelWithHP;
 import models.PlayerBulletModel;
+import utils.SoundPlayer;
 import utils.Utils;
 import views.GameView;
 import views.PlayerBulletView;
@@ -50,16 +51,20 @@ public class PlayerBulletController extends GameController implements Colliable 
 
     @Override
     public void onCollide(Colliable colliable) {
-     //   this.getModel().destroy();
+        //   this.getModel().destroy();
         if (colliable instanceof EnemyController) {
             PlayerBulletModel bullet = (PlayerBulletModel) model;
             ((GameModelWithHP) ((EnemyController) colliable).getModel()).decreaseHP(bullet.getDamage());
-            this.getModel().destroy();
+            if(!((GameModelWithHP) ((EnemyController) colliable).getModel()).isExplosive()) {
+                this.getModel().destroy();
+            }
         }
-        if (colliable instanceof IslandController) {
-            PlayerBulletModel bullet = (PlayerBulletModel) model;
-            ((GameModelWithHP) ((IslandController) colliable).getModel()).decreaseHP(bullet.getDamage());
-            this.getModel().destroy();
-        }
+//        if (colliable instanceof IslandController) {
+//            PlayerBulletModel bullet = (PlayerBulletModel) model;
+//            ((GameModelWithHP) ((IslandController) colliable).getModel()).decreaseHP(bullet.getDamage());
+//            if(!((GameModelWithHP) ((IslandController) colliable).getModel()).isExplosive()) {
+//                this.getModel().destroy();
+//            }
+//        }
     }
 }

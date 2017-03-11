@@ -17,7 +17,7 @@ public class PlayerBulletLeftController extends GameController implements Collia
     public PlayerBulletLeftController(PlayerBulletModel model, GameView view) {
         super(model, view);
         this.vector.dy = -SPEED;
-        this.vector.dx = -(SPEED -4);
+        this.vector.dx = -(SPEED - 4);
         CollsionPool.instance.add(this);
     }
 
@@ -53,12 +53,14 @@ public class PlayerBulletLeftController extends GameController implements Collia
         if (colliable instanceof EnemyController) {
             PlayerBulletModel bullet = (PlayerBulletModel) model;
             ((GameModelWithHP) ((EnemyController) colliable).getModel()).decreaseHP(bullet.getDamage());
-            this.getModel().destroy();
+            if(!((GameModelWithHP) ((EnemyController) colliable).getModel()).isExplosive()) {
+                this.getModel().destroy();
+            }
         }
-        if (colliable instanceof IslandController) {
-            PlayerBulletModel bullet = (PlayerBulletModel) model;
-            ((GameModelWithHP) ((IslandController) colliable).getModel()).decreaseHP(bullet.getDamage());
-            this.getModel().destroy();
-        }
+//        if (colliable instanceof IslandController) {
+//            PlayerBulletModel bullet = (PlayerBulletModel) model;
+//            ((GameModelWithHP) ((IslandController) colliable).getModel()).decreaseHP(bullet.getDamage());
+//            this.getModel().destroy();
+//        }
     }
 }

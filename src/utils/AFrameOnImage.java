@@ -11,21 +11,24 @@ import java.awt.image.BufferedImage;
 public class AFrameOnImage {
     private boolean enablePaintRect = false;
 
-    private int []DimsBounds = new int[4];
+    private int[] DimsBounds = new int[4];
 
-    public AFrameOnImage(int xOnImage, int yOnImage, int w, int h){
+    public AFrameOnImage(int xOnImage, int yOnImage, int w, int h) {
         DimsBounds[0] = xOnImage;
         DimsBounds[1] = yOnImage;
         DimsBounds[2] = w;
         DimsBounds[3] = h;
     }
-    public void VisibleRectDebug(boolean enable){
+
+    public void VisibleRectDebug(boolean enable) {
         enablePaintRect = enable;
     }
-    public int[] GetBounds(){
+
+    public int[] GetBounds() {
         return DimsBounds;
     }
-    public void Paint(int x, int y, BufferedImage image, Graphics g, int anchor, float rotation){
+
+    public void Paint(int x, int y, BufferedImage image, Graphics g, int anchor, float rotation) {
 
 
         BufferedImage imageDraw = image.getSubimage(DimsBounds[0], DimsBounds[1], DimsBounds[2], DimsBounds[3]);
@@ -40,9 +43,10 @@ public class AFrameOnImage {
 
         g.drawImage(imageDraw, x, y, null);
 
-        if(enablePaintRect) PaintBound(g);
+        if (enablePaintRect) PaintBound(g);
     }
-    private void PaintBound(Graphics g){
+
+    private void PaintBound(Graphics g) {
 
     }
 }

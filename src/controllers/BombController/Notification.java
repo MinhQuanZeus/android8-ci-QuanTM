@@ -18,15 +18,16 @@ public class Notification {
     public void subsribe(BombSubcriber bombSubscriber) {
         subscribers.add(bombSubscriber);
     }
+
     public void subsribeFrezze(FreezzeSubcriber bombSubscriber) {
         freezzeSubcribers.add(bombSubscriber);
     }
 
     public void onBomExpode(int x, int y) {
         Iterator<BombSubcriber> bombSubscriberIterator = subscribers.iterator();
-        while(bombSubscriberIterator.hasNext()) {
+        while (bombSubscriberIterator.hasNext()) {
             BombSubcriber bombSubscriber = bombSubscriberIterator.next();
-            if(!bombSubscriber.getGameModel().isAlive()) {
+            if (!bombSubscriber.getGameModel().isAlive()) {
                 bombSubscriberIterator.remove();
             } else {
                 bombSubscriber.onBombExplode(x, y);
@@ -36,9 +37,9 @@ public class Notification {
 
     public void onFrezze(int x, int y) {
         Iterator<FreezzeSubcriber> bombSubscriberIterator = freezzeSubcribers.iterator();
-        while(bombSubscriberIterator.hasNext()) {
+        while (bombSubscriberIterator.hasNext()) {
             FreezzeSubcriber freezzeSubcriber = bombSubscriberIterator.next();
-            if(!freezzeSubcriber.getGameModel().isAlive()) {
+            if (!freezzeSubcriber.getGameModel().isAlive()) {
                 bombSubscriberIterator.remove();
             } else {
                 freezzeSubcriber.onFrezze(x, y);

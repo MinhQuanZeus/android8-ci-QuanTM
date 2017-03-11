@@ -8,7 +8,7 @@ import java.awt.*;
 /**
  * Created by QuanT on 2/28/2017.
  */
-public class GameController implements BaseController{
+public class GameController implements BaseController {
     protected GameModel model;
     protected GameView view;
     protected GameVector vector;
@@ -30,10 +30,10 @@ public class GameController implements BaseController{
 
     @Override
     public void draw(Graphics g) {
-        view.draw(g,model);
+        view.draw(g, model);
     }
 
-    public void run(){
+    public void run() {
         model.move(this.vector);
     }
 

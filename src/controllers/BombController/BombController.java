@@ -6,6 +6,7 @@ import controllers.GameController;
 import controllers.PlaneController;
 import models.BombModel;
 import models.GameModel;
+import utils.SoundPlayer;
 import views.GameView;
 
 /**
@@ -13,11 +14,13 @@ import views.GameView;
  */
 public class BombController extends GameController implements Colliable {
     private static final int SPEED = 2;
+
     public BombController(GameModel model, GameView view) {
         super(model, view);
         vector.dy = SPEED;
         CollsionPool.instance.add(this);
     }
+
     public static BombController create(int x, int y) {
         return new BombController(
                 new BombModel(x, y),
@@ -31,8 +34,10 @@ public class BombController extends GameController implements Colliable {
 
     @Override
     public void onCollide(Colliable colliable) {
-        if(colliable instanceof PlaneController) {
+        if (colliable instanceof PlaneController) {
             Notification.instance.onBomExpode(model.getX(), model.getY());
+            SoundPlayer shotSound = new SoundPlayer("explosive.wav");
+            shotSound.play();
             model.destroy();
         }
     }
